@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useState } from 'react';
 import { TextField } from '../TextField';
 import { Movie } from '../../types/Movie';
@@ -45,6 +46,9 @@ export const NewMovie: React.FC<Props> = ({ onAdd }) => {
     setIsInvalidImgLink(false);
   };
 
+  const pattern =
+    /^((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w-_]*)?\??(?:[-+=&;%@,.\w_]*)#?(?:[,.!/\\\w]*))?)$/;
+
   return (
     <form className="NewMovie" key={count} onSubmit={handleSubmit}>
       <h2 className="title">Add a movie</h2>
@@ -69,7 +73,8 @@ export const NewMovie: React.FC<Props> = ({ onAdd }) => {
         label="Image URL"
         value={imgUrl}
         onChange={setImgUrl}
-        regexCheck={setIsInvalidImgLink}
+        validate={value => !pattern.test(value)}
+        onValidityChange={setIsInvalidImgLink}
         required
       />
 
@@ -78,7 +83,8 @@ export const NewMovie: React.FC<Props> = ({ onAdd }) => {
         label="Imdb URL"
         value={imdbUrl}
         onChange={setImdbUrl}
-        regexCheck={setIsInvalidImdbLink}
+        validate={value => !pattern.test(value)}
+        onValidityChange={setIsInvalidImdbLink}
         required
       />
 
