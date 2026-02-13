@@ -9,7 +9,7 @@ type Props = {
   label?: string;
   placeholder?: string;
   required?: boolean;
-  regexCheck?: boolean;
+  regexCheck?: (isInvalid: boolean) => void;
   onChange?: (newValue: string) => void;
 };
 
@@ -23,7 +23,7 @@ export const TextField: React.FC<Props> = ({
   label = name,
   placeholder = `Enter ${label}`,
   required = false,
-  regexCheck = false,
+  regexCheck,
   onChange = () => {},
 }) => {
   // generate a unique id once on component load
@@ -33,11 +33,10 @@ export const TextField: React.FC<Props> = ({
   const [touched, setTouched] = useState(false);
   const hasError = touched && required && value.trim() === '';
 
-  const [isInvalidLink, setIsInvalidLink] = useState(false);
+  const [isLinkInvalid, setIsLinkInvalid] = useState(false);
   const pattern =
     /^((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w-_]*)?\??(?:[-+=&;%@,.\w_]*)#?(?:[,.!/\\\w]*))?)$/;
-  const hasLinkError =
-    regexCheck && touched && value.trim() !== '' && isInvalidLink;
+  const hasLinkError = isLinkInvalid && touched && value.trim() !== '';
 
   return (
     <div className="field">
@@ -56,11 +55,17 @@ export const TextField: React.FC<Props> = ({
           placeholder={placeholder}
           value={value}
           onChange={event => {
-            onChange(event.target.value);
-            setIsInvalidLink(!pattern.test(event.target.value));
+            const target = event.target.value;
+
+            onChange(target);
+            if (regexCheck) {
+              const invalid = !pattern.test(target.trim());
+
+              regexCheck(invalid);
+              setIsLinkInvalid(invalid);
+            }
           }}
           onBlur={() => setTouched(true)}
-          onFocus={() => setTouched(false)}
         />
       </div>
 

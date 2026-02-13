@@ -15,12 +15,15 @@ export const NewMovie: React.FC<Props> = ({ onAdd }) => {
   const [imgUrl, setImgUrl] = useState('');
   const [imdbUrl, setImdbUrl] = useState('');
   const [imdbId, setImdbId] = useState('');
+  const [isInvalidImgLink, setIsInvalidImgLink] = useState(false);
+  const [isInvalidImdbLink, setIsInvalidImdbLink] = useState(false);
   const isAddDisabled =
     title.trim() === '' ||
     imdbUrl.trim() === '' ||
     imgUrl.trim() === '' ||
-    imdbId.trim() === '';
-
+    imdbId.trim() === '' ||
+    isInvalidImgLink ||
+    isInvalidImdbLink;
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -31,13 +34,15 @@ export const NewMovie: React.FC<Props> = ({ onAdd }) => {
       imdbId,
       imdbUrl,
     });
-    setCount(pv => pv + 1);
+    setCount(previousCount => previousCount + 1);
 
     setTitle('');
     setDescription('');
     setImgUrl('');
     setImdbUrl('');
     setImdbId('');
+    setIsInvalidImdbLink(false);
+    setIsInvalidImgLink(false);
   };
 
   return (
@@ -64,7 +69,7 @@ export const NewMovie: React.FC<Props> = ({ onAdd }) => {
         label="Image URL"
         value={imgUrl}
         onChange={setImgUrl}
-        regexCheck
+        regexCheck={setIsInvalidImgLink}
         required
       />
 
@@ -73,7 +78,7 @@ export const NewMovie: React.FC<Props> = ({ onAdd }) => {
         label="Imdb URL"
         value={imdbUrl}
         onChange={setImdbUrl}
-        regexCheck
+        regexCheck={setIsInvalidImdbLink}
         required
       />
 
