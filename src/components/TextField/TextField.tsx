@@ -61,9 +61,9 @@ export const TextField: React.FC<Props> = ({
             if (validate) {
               const invalid = validate(target);
 
+              setIsLinkInvalid(invalid);
               if (onValidityChange) {
                 onValidityChange(invalid);
-                setIsLinkInvalid(invalid);
               }
             }
           }}
